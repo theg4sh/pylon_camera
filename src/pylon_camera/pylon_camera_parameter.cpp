@@ -63,7 +63,8 @@ PylonCameraParameter::PylonCameraParameter() :
         auto_exp_upper_lim_(0.0),
         mtu_size_(3000),
         inter_pkg_delay_(1000),
-        shutter_mode_(SM_DEFAULT)
+        shutter_mode_(SM_DEFAULT),
+        fetch_camera_timestamp_(false)
 {}
 
 PylonCameraParameter::~PylonCameraParameter()
@@ -205,6 +206,11 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
         }
     }
     // ##########################
+
+    if ( nh.hasParam("fetch_camera_timestamp"))
+    {
+        nh.getParam("fetch_camera_timestamp", fetch_camera_timestamp_);
+    }
 
     nh.param<double>("exposure_search_timeout", exposure_search_timeout_, 5.);
     nh.param<double>("auto_exposure_upper_limit", auto_exp_upper_lim_, 10000000.);
