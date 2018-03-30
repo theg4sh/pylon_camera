@@ -98,6 +98,12 @@ public:
     virtual bool applyCamSpecificStartupSettings(const PylonCameraParameter& parameters) = 0;
 
     /**
+     * Enables the chunk features to grab timestamp from the camera.
+     * @return true if timestamp chunk is successfully enabled
+     */
+    virtual bool enableTimestampChunk() = 0;
+
+    /**
      * Initializes the internal parameters of the PylonCamera instance.
      * @param parameters The PylonCameraParameter set to use
      * @return true if all parameters could be sent to the camera.
@@ -118,6 +124,14 @@ public:
      * @return true if the image was grabbed successfully.
      */
     virtual bool grab(uint8_t* image) = 0;
+
+    /**
+     * Grab a camera frame with its time stamp and copy the result into image
+     * @param image reference to the output image
+     * @param stamp reference to the output time stamp
+     * @return true if image and time stamp were grabbed successfully.
+     */
+    virtual bool grab(std::vector<uint8_t>& image, ros::Time& stamp) = 0;
 
     /**
      * @brief sets shutter mode for the camera (rolling or global_reset)
