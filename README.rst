@@ -91,6 +91,14 @@ All parameters are listed in the default config file:  ``config/default.yaml``
   Set mode of camera's shutter if the value is not empty. The supported modes are 'rolling', 'global' and 'global_reset'.
   Default value is '' (empty)
 
+- **fetch_camera_timestamp**
+  Flag that controls how the time stamp inside each image's header is determined.
+  If the flag is set to false, the timestamp corresponds to the ROS time once the image was received by the host computer.
+  If the flag is set to true, the time stamp from the camera, which contains a stamp of when the frame acquision was triggered, is fetched.
+  Set this flag to true only if the camera's clock is synchronized with the clock of the host computer (through PTP IEEE-1588).
+  Default value is false.
+
+
 **Image Intensity Settings**
 
 The following settings do **NOT** have to be set. Each camera has default values which provide an automatic image adjustment resulting in valid images
