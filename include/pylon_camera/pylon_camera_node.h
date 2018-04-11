@@ -352,6 +352,7 @@ protected:
     sensor_msgs::Image img_raw_msg_;
     cv_bridge::CvImage* cv_bridge_img_rect_;
 
+    sensor_msgs::CameraInfoPtr cam_info;
     camera_info_manager::CameraInfoManager* camera_info_manager_;
 
     std::vector<std::size_t> sampling_indices_;

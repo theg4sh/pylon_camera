@@ -176,6 +176,12 @@ public:
      */
     virtual bool setImageEncoding(const std::string& target_ros_encoding) = 0;
 
+
+    /**
+     *
+     */
+    virtual bool setImageConversion(const std::string& target_ros_encoding) = 0;
+
     /**
      * Sets the exposure time in microseconds
      * @param target_exposure the desired exposure time to set in microseconds.

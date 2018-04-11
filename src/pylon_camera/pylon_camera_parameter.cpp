@@ -39,6 +39,7 @@ PylonCameraParameter::PylonCameraParameter() :
         frame_rate_(5.0),
         camera_info_url_(""),
         image_encoding_(""),
+        image_conversion_(""),
         binning_x_(1),
         binning_y_(1),
         binning_x_given_(false),
@@ -143,6 +144,24 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
             encoding = std::string("");
         }
         image_encoding_ = encoding;
+    }
+
+    if ( nh.hasParam("image_conversion") )
+    {
+        std::string encoding;
+        nh.getParam("image_conversion", encoding);
+        if ( !encoding.empty() &&
+             !sensor_msgs::image_encodings::isMono(encoding) &&
+             !sensor_msgs::image_encodings::isColor(encoding) &&
+             !sensor_msgs::image_encodings::isBayer(encoding) &&
+             encoding != sensor_msgs::image_encodings::YUV422 )
+        {
+            ROS_WARN_STREAM("Desired image conversion parameter: '" << encoding
+                << "' is not part of the 'sensor_msgs/image_encodings.h' list!"
+                << " Will not set encoding");
+            encoding = std::string("");
+        }
+        image_conversion_ = encoding;
     }
 
     // ##########################
@@ -328,6 +347,11 @@ std::string PylonCameraParameter::shutterModeString() const
 const std::string& PylonCameraParameter::imageEncoding() const
 {
     return image_encoding_;
+}
+
+const std::string& PylonCameraParameter::imageConversion() const
+{
+    return image_conversion_;
 }
 
 const std::string& PylonCameraParameter::cameraFrame() const

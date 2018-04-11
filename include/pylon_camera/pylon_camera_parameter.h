@@ -89,6 +89,11 @@ public:
     const std::string& imageEncoding() const;
 
     /**
+     * Getter for the image_conversion_ read from ros-parameter server
+     */
+    const std::string& imageConversion() const;
+
+    /**
      * Setter for the frame_rate_ initially set from ros-parameter server
      * The frame rate needs to be updated with the value the camera supports
      */
@@ -315,6 +320,14 @@ protected:
      * 'bayer_gbrg8', 'bayer_rggb8' and 'yuv422'
      */
     std::string image_encoding_;
+
+    /**
+     * The encoding of the pixels -- channel meaning, ordering, size taken
+     * from the list of strings in include/sensor_msgs/image_encodings.h
+     * The supported encodings are 'mono8', 'bgr8', 'rgb8', 'bayer_bggr8',
+     * 'bayer_gbrg8', 'bayer_rggb8' and 'yuv422'
+     */
+    std::string image_conversion_;
 };
 
 }  // namespace pylon_camera

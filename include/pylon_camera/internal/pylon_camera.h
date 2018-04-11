@@ -34,6 +34,7 @@
 #pragma GCC diagnostic ignored "-Wliteral-suffix"
 
 #include <pylon/PylonIncludes.h>
+#include <pylon/ImageFormatConverter.h>
 #include <GenApi/IEnumEntry.h>
 #include <string>
 #include <vector>
@@ -79,6 +80,8 @@ public:
                              size_t& reached_binning_y);
 
     virtual bool setImageEncoding(const std::string& target_ros_encoding);
+
+    virtual bool setImageConversion(const std::string& target_ros_encoding);
 
     virtual bool setExposure(const float& target_exposure, float& reached_exposure);
 
@@ -148,6 +151,8 @@ protected:
     typedef typename CameraTraitT::ChunkSelectorEnums ChunkSelectorEnums;
 
     CBaslerInstantCameraT* cam_;
+    Pylon::CImageFormatConverter imagefc_;
+    bool do_image_conversion_ = false;
 
     // Each camera has it's own getter for GenApi accessors that are named
     // differently for USB and GigE
@@ -165,6 +170,7 @@ protected:
                                        const float& current_brightness);
 
     virtual bool grab(Pylon::CGrabResultPtr& grab_result);
+    virtual bool grab(Pylon::CGrabResultPtr& grab_result, uint64_t &stamp);
 
     virtual bool setupSequencer(const std::vector<float>& exposure_times,
                                 std::vector<float>& exposure_times_set);

@@ -214,6 +214,8 @@ bool PylonCameraNode::startGrabbing()
     setupInitialCameraInfo(initial_cam_info);
     camera_info_manager_->setCameraInfo(initial_cam_info);
 
+    cam_info = CameraInfoPtr(new CameraInfo(camera_info_manager_->getCameraInfo()));
+
     if ( pylon_camera_parameter_set_.cameraInfoURL().empty() ||
          !camera_info_manager_->validateURL(pylon_camera_parameter_set_.cameraInfoURL()) )
     {
@@ -231,10 +233,9 @@ bool PylonCameraNode::startGrabbing()
         if ( camera_info_manager_->loadCameraInfo(
                                 pylon_camera_parameter_set_.cameraInfoURL()) )
         {
-            setupRectification();
+            //setupRectification();
+            cam_info = CameraInfoPtr(new CameraInfo(camera_info_manager_->getCameraInfo()));
             // set the correct tf frame_id
-            CameraInfoPtr cam_info(new CameraInfo(
-                                        camera_info_manager_->getCameraInfo()));
             cam_info->header.frame_id = img_raw_msg_.header.frame_id;
             camera_info_manager_->setCameraInfo(*cam_info);
         }
@@ -421,16 +422,18 @@ void PylonCameraNode::spin()
         {
             // get actual cam_info-object in every frame, because it might have
             // changed due to a 'set_camera_info'-service call
+            /*
             sensor_msgs::CameraInfoPtr cam_info(
                         new sensor_msgs::CameraInfo(
                                         camera_info_manager_->getCameraInfo()));
+            */
             cam_info->header.stamp = img_raw_msg_.header.stamp;
 
             // Publish via image_transport
             img_raw_pub_.publish(img_raw_msg_, *cam_info);
         }
 
-        if ( getNumSubscribersRect() > 0 && camera_info_manager_->isCalibrated() )
+        if ( cv_bridge_img_rect_ != nullptr && getNumSubscribersRect() > 0 && camera_info_manager_->isCalibrated() )
         {
             cv_bridge_img_rect_->header.stamp = img_raw_msg_.header.stamp;
             assert(pinhole_model_->initialized());
@@ -893,7 +896,7 @@ bool PylonCameraNode::setBinningX(const size_t& target_binning_x,
             {
                 ROS_ERROR_STREAM("Error in setBinningX(): Unable to set target "
                 << "binning_x factor before timeout");
-                CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+                //CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
                 cam_info->binning_x = pylon_camera_->currentBinningX();
                 camera_info_manager_->setCameraInfo(*cam_info);
                 img_raw_msg_.width = pylon_camera_->imageCols();
@@ -905,7 +908,7 @@ bool PylonCameraNode::setBinningX(const size_t& target_binning_x,
             r.sleep();
         }
     }
-    CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+    //CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
     cam_info->binning_x = pylon_camera_->currentBinningX();
     camera_info_manager_->setCameraInfo(*cam_info);
     img_raw_msg_.width = pylon_camera_->imageCols();
@@ -938,7 +941,7 @@ bool PylonCameraNode::setBinningY(const size_t& target_binning_y,
             {
                 ROS_ERROR_STREAM("Error in setBinningY(): Unable to set target "
                     << "binning_y factor before timeout");
-                CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+                //CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
                 cam_info->binning_y = pylon_camera_->currentBinningY();
                 camera_info_manager_->setCameraInfo(*cam_info);
                 img_raw_msg_.height = pylon_camera_->imageRows();
@@ -950,7 +953,7 @@ bool PylonCameraNode::setBinningY(const size_t& target_binning_y,
             r.sleep();
         }
     }
-    CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+    //CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
     cam_info->binning_y = pylon_camera_->currentBinningY();
     camera_info_manager_->setCameraInfo(*cam_info);
     img_raw_msg_.height = pylon_camera_->imageRows();
